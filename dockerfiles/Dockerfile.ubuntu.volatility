@@ -1,6 +1,6 @@
 #https://hub.docker.com/_/ubuntu
-#FROM ubuntu:bionic
-FROM ubuntu:20.04
+FROM ubuntu:bionic
+#FROM ubuntu:20.04 #Unable to locate package python-distorm3
 #FROM ubuntu:22.04 #Package 'python' has no installation candidate
 LABEL org.opencontainers.image.authors="githubfoam"
 
