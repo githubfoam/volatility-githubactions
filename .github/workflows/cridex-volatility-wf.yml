@@ -58,7 +58,10 @@ jobs:
         #https://github.com/volatilityfoundation/volatility/wiki/Memory-Samples
         wget http://files.sempersecurus.org/dumps/cridex_memdump.zip
         unzip cridex_memdump.zip
-        du -h cridex.vmem && mv cridex.vmem /tmp
+        #grant read permission to group/other
+        chmod g+o+r /tmp/cridex.vmem
+        du -h cridex.vmem 
+        mv cridex.vmem /tmp
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem imageinfo
         #see what were the running processes using the pslist plugin
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem \
