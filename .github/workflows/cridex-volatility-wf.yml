@@ -63,6 +63,7 @@ jobs:
         du -h cridex.vmem 
         mv cridex.vmem /tmp
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem imageinfo
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem kdbgscan
         #see what were the running processes using the pslist plugin
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem \
         --profile=WinXPSP2x86 pslist

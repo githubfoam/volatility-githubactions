@@ -1,0 +1,39 @@
+#https://hub.docker.com/_/ubuntu
+FROM ubuntu:bionic
+#FROM ubuntu:20.04 #Unable to locate package python-distorm3
+#FROM ubuntu:22.04 #Package 'python' has no installation candidate
+LABEL org.opencontainers.image.authors="githubfoam"
+
+RUN set -xe && \
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt-get -qq update && \
+    apt-get -qqy upgrade
+
+RUN set -xe \
+  && apt-get install -y git python python-distorm3 python-crypto \
+  && adduser --disabled-login --system --no-create-home vol \
+  && git clone https://github.com/volatilityfoundation/volatility.git \
+  && chown -R vol /volatility \
+  && rm -rf /volatility/.git \
+  && apt-get -y remove --purge git \
+  && apt-get -y autoremove \
+  && apt-get -y clean \
+  && rm -rf /var/lib/apt/lists/*
+
+#install mimikatz plugin
+RUN set -xe && \     
+        mkdir -p /tmp/volatility-plugins && \
+        cd /tmp/volatility-plugins && \
+        apt-get update && \
+        apt-get install python-pip -y && \
+        pip install construct && \
+        wget https://raw.githubusercontent.com/RealityNet/hotoloti/master/volatility/mimikatz.py  
+
+VOLUME /dumps
+
+USER vol
+
+WORKDIR /volatility
+
+ENTRYPOINT ["python", "vol.py"]
+
