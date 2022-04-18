@@ -31,6 +31,7 @@ jobs:
         sudo apt-get install -y neofetch && neofetch                  
     - name: "build volatility with ubuntu"
       run: |
+        set -xe
         # destroyed afterwards (use --rm )
         # all subsequent Dockerfile commands generate new images and the cache is not usedi
         set -xe
@@ -50,13 +51,12 @@ jobs:
         docker run ${name}:${version} -h  
     - name: "analyze with volatility"
       run: |
+        set -xe
         docker image ls
         sudo apt-get install megatools p7zip -y
         #download image 
         megadl 'https://mega.nz/#!sh8wmCIL!b4tpech4wzc3QQ6YgQ2uZnOmctRZ2duQxDqxbkWYipQ'
-        sleep 10
         p7zip -d OtterCTF.7z
-        sleep 10
         du -h OtterCTF.vmem && mv OtterCTF.vmem /tmp
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem imageinfo
         #see what were the running processes using the pslist plugin
@@ -68,4 +68,7 @@ jobs:
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 connscan
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 sockets
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 netscan
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 consoles
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 cmdscan  
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 cmdline 
 

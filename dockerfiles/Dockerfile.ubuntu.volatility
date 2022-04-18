@@ -1,7 +1,12 @@
 FROM ubuntu:bionic
 LABEL org.opencontainers.image.authors="githubfoam"
 
-RUN apt-get update \
+RUN set -xe && \
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt-get -qq update && \
+    apt-get -qqy upgrade
+
+RUN set -xe \
   && apt-get install -y git python python-distorm3 python-crypto \
   && adduser --disabled-login --system --no-create-home vol \
   && git clone https://github.com/volatilityfoundation/volatility.git \
