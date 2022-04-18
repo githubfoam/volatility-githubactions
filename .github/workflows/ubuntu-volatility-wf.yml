@@ -48,3 +48,13 @@ jobs:
         docker inspect -f '{{.Config.Entrypoint}}' ${name}:${version}
         echo "################## ENTRYPOINT ##################"
         docker run ${name}:${version} -h  
+    - name: "build volatility with ubuntu"
+      run: |
+        docker image ls
+        apt-get install megatools p7zip -y
+        #download image file
+        # megadl 'https://mega.nz/file/sh8wmCIL#b4tpech4wzc3QQ6YgQ2uZnOmctRZ2duQxDqxbkWYipQ'
+        # sleep 5
+        # p7zip -d OtterCTF.7z
+        # du -h OtterCTF.vmem
+        # docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem imageinfo
