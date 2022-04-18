@@ -1,4 +1,4 @@
-name: "volatility with ubuntu CI workflow"
+name: "cridex with volatility with ubuntu CI workflow"
 
 
 on:
@@ -58,24 +58,23 @@ jobs:
         #https://github.com/volatilityfoundation/volatility/wiki/Memory-Samples
         wget http://files.sempersecurus.org/dumps/cridex_memdump.zip
         unzip cridex_memdump.zip
-        du -h OtterCTF.vmem && mv OtterCTF.vmem /tmp
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem imageinfo
+        du -h cridex.vmem && mv cridex.vmem /tmp
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem imageinfo
         #see what were the running processes using the pslist plugin
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 pslist
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 pslist
         #display the processes and their parent processes
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 pstree
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 pstree
         #list processes that are trying to hide themselves while running on the computer
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 psxview
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 psxview
         #This command does not support the profile Win7SP1x64
-        #docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 connscan
-        #This command does not support the profile Win7SP1x64
-        #docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 sockets
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 netscan
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 consoles
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 cmdscan  
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 cmdline 
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 procdump -p 1640 --dump-dir /tmp
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 memdump -p 1640 --dump-dir /tmp
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 connscan
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 sockets
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 netscan
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 consoles
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 cmdscan  
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 cmdline 
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 procdump -p 1640 --dump-dir /tmp
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 memdump -p 1640 --dump-dir /tmp
         #a relation between the piece of information
         #the opened tcp connection towards the 41.168.5.140 IP and 1640 process
         #C&C IP address: 41.168.5.140
@@ -87,9 +86,9 @@ jobs:
         strings 1640.dmp | grep -Fi "/zb/v_01_a/in/"
         #print the list of registry hives
         #“HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run, RunOnce, RunOnceEx” 
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 hivelist
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 hivelist
         #see the content of a registry key its subkeys and values
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 printkey -K "Software\Microsoft\Windows\CurrentVersion\Run"
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 printkey -K "Software\Microsoft\Windows\CurrentVersion\Run"
         #confirm that the concerned executable named “KB00207877.exe” is linked with the trojan
         strings 1640.dmp | grep -Fi "KB00207877.exe"
     # - name: "analyze cridex with volatility"
@@ -100,24 +99,24 @@ jobs:
     #     #download image 
     #     megadl 'https://mega.nz/#!sh8wmCIL!b4tpech4wzc3QQ6YgQ2uZnOmctRZ2duQxDqxbkWYipQ'
     #     p7zip -d OtterCTF.7z
-    #     du -h OtterCTF.vmem && mv OtterCTF.vmem /tmp
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem imageinfo
+    #     du -h cridex.vmem && mv cridex.vmem /tmp
+    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem imageinfo
     #     #see what were the running processes using the pslist plugin
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 pslist
+    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 pslist
     #     #display the processes and their parent processes
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 pstree
+    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 pstree
     #     #list processes that are trying to hide themselves while running on the computer
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 psxview
+    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 psxview
     #     #This command does not support the profile Win7SP1x64
-    #     #docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 connscan
+    #     #docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 connscan
     #     #This command does not support the profile Win7SP1x64
-    #     #docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 sockets
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 netscan
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 consoles
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 cmdscan  
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 cmdline 
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 procdump -p 1640 --dump-dir /tmp
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 memdump -p 1640 --dump-dir /tmp
+    #     #docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 sockets
+    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 netscan
+    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 consoles
+    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 cmdscan  
+    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 cmdline 
+    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 procdump -p 1640 --dump-dir /tmp
+    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 memdump -p 1640 --dump-dir /tmp
     #     #a relation between the piece of information
     #     #the opened tcp connection towards the 41.168.5.140 IP and 1640 process
     #     #C&C IP address: 41.168.5.140
@@ -129,8 +128,8 @@ jobs:
     #     strings 1640.dmp | grep -Fi "/zb/v_01_a/in/"
     #     #print the list of registry hives
     #     #“HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run, RunOnce, RunOnceEx” 
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 hivelist
+    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 hivelist
     #     #see the content of a registry key its subkeys and values
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 printkey -K "Software\Microsoft\Windows\CurrentVersion\Run"
+    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem --profile=WinXPSP2x86 printkey -K "Software\Microsoft\Windows\CurrentVersion\Run"
     #     #confirm that the concerned executable named “KB00207877.exe” is linked with the trojan
     #     strings 1640.dmp | grep -Fi "KB00207877.exe"
