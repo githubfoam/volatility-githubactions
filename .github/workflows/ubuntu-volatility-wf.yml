@@ -65,10 +65,17 @@ jobs:
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 pstree
         #list processes that are trying to hide themselves while running on the computer
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 psxview
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 connscan
+        #This command does not support the profile Win7SP1x64
+        #docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 connscan
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 sockets
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 netscan
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 consoles
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 cmdscan  
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 cmdline 
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 procdump -p 1640 --dump-dir /tmp
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 memdump -p 1640 --dump-dir /tmp
+        #a relation between the piece of information
+        #the opened tcp connection towards the 41.168.5.140 IP and 1640 process
+        strings 1640.dmp | grep -Fi "41.168.5.140" -C 5
+
 
