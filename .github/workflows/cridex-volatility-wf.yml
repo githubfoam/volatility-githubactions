@@ -59,7 +59,7 @@ jobs:
         wget http://files.sempersecurus.org/dumps/cridex_memdump.zip
         unzip cridex_memdump.zip
         #grant read permission to group/other
-        chmod g+o+r /tmp/cridex.vmem
+        chmod g+o+r cridex.vmem
         du -h cridex.vmem 
         mv cridex.vmem /tmp
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/cridex.vmem imageinfo
