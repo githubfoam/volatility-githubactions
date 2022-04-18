@@ -49,88 +49,19 @@ jobs:
         docker inspect -f '{{.Config.Entrypoint}}' ${name}:${version}
         echo "################## ENTRYPOINT ##################"
         docker run ${name}:${version} -h  
-    - name: "analyze cridex with volatility"
+    - name: "analyze with volatility"
       run: |
         set -xe
         docker image ls
         sudo apt-get install megatools p7zip -y
         #download image 
-        #https://github.com/volatilityfoundation/volatility/wiki/Memory-Samples
-        wget http://files.sempersecurus.org/dumps/cridex_memdump.zip
-        unzip cridex_memdump.zip
+        megadl 'https://mega.nz/#!sh8wmCIL!b4tpech4wzc3QQ6YgQ2uZnOmctRZ2duQxDqxbkWYipQ'
+        p7zip -d OtterCTF.7z
         du -h OtterCTF.vmem && mv OtterCTF.vmem /tmp
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem imageinfo
-        #see what were the running processes using the pslist plugin
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 pslist
-        #display the processes and their parent processes
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 pstree
-        #list processes that are trying to hide themselves while running on the computer
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 psxview
-        #This command does not support the profile Win7SP1x64
-        #docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 connscan
-        #This command does not support the profile Win7SP1x64
-        #docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 sockets
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 netscan
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 consoles
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 cmdscan  
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 cmdline 
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 procdump -p 1640 --dump-dir /tmp
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 memdump -p 1640 --dump-dir /tmp
-        #a relation between the piece of information
-        #the opened tcp connection towards the 41.168.5.140 IP and 1640 process
-        #C&C IP address: 41.168.5.140
-        strings 1640.dmp | grep -Fi "41.168.5.140" -C 5
-        strings 1640.dmp | grep "bank.com"
-        #see if other IP addresses are used
-        #pattern “/zb/v_01_a/in/” which is the path queried by the malware (“41.168.5.140:8080/zb/v_01_a/in/”)
-        #another IOC: 188.40.0.138
-        strings 1640.dmp | grep -Fi "/zb/v_01_a/in/"
-        #print the list of registry hives
-        #“HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run, RunOnce, RunOnceEx” 
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 hivelist
-        #see the content of a registry key its subkeys and values
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 printkey -K "Software\Microsoft\Windows\CurrentVersion\Run"
-        #confirm that the concerned executable named “KB00207877.exe” is linked with the trojan
-        strings 1640.dmp | grep -Fi "KB00207877.exe"
-    # - name: "analyze cridex with volatility"
-    #   run: |
-    #     set -xe
-    #     docker image ls
-    #     sudo apt-get install megatools p7zip -y
-    #     #download image 
-    #     megadl 'https://mega.nz/#!sh8wmCIL!b4tpech4wzc3QQ6YgQ2uZnOmctRZ2duQxDqxbkWYipQ'
-    #     p7zip -d OtterCTF.7z
-    #     du -h OtterCTF.vmem && mv OtterCTF.vmem /tmp
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem imageinfo
-    #     #see what were the running processes using the pslist plugin
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 pslist
-    #     #display the processes and their parent processes
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 pstree
-    #     #list processes that are trying to hide themselves while running on the computer
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 psxview
-    #     #This command does not support the profile Win7SP1x64
-    #     #docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 connscan
-    #     #This command does not support the profile Win7SP1x64
-    #     #docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 sockets
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 netscan
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 consoles
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 cmdscan  
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 cmdline 
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 procdump -p 1640 --dump-dir /tmp
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 memdump -p 1640 --dump-dir /tmp
-    #     #a relation between the piece of information
-    #     #the opened tcp connection towards the 41.168.5.140 IP and 1640 process
-    #     #C&C IP address: 41.168.5.140
-    #     strings 1640.dmp | grep -Fi "41.168.5.140" -C 5
-    #     strings 1640.dmp | grep "bank.com"
-    #     #see if other IP addresses are used
-    #     #pattern “/zb/v_01_a/in/” which is the path queried by the malware (“41.168.5.140:8080/zb/v_01_a/in/”)
-    #     #another IOC: 188.40.0.138
-    #     strings 1640.dmp | grep -Fi "/zb/v_01_a/in/"
-    #     #print the list of registry hives
-    #     #“HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run, RunOnce, RunOnceEx” 
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 hivelist
-    #     #see the content of a registry key its subkeys and values
-    #     docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 printkey -K "Software\Microsoft\Windows\CurrentVersion\Run"
-    #     #confirm that the concerned executable named “KB00207877.exe” is linked with the trojan
-    #     strings 1640.dmp | grep -Fi "KB00207877.exe"
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem \
+        --profile=Win7SP1x86 hivelist        
+        #dump the password hashes
+        #docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem \
+        --profile=Win7SP1x86 hashdump -y 0x8b21c008 -s 0x9aad6148 > hashes.txt       
+        # cat hashes.txt

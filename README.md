@@ -6,5 +6,10 @@ https://github.com/volatilityfoundation/volatility/wiki/Memory-Samples
 https://www.root-me.org/
 https://www.virustotal.com
 https://www.hybrid-analysis.com/
+
+IPs with hostnames
 https://passivedns.mnemonic.no/
+
+online password hash cracker
+https://crackstation.net/
 ~~~~
