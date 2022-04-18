@@ -59,3 +59,13 @@ jobs:
         sleep 10
         du -h OtterCTF.vmem && mv OtterCTF.vmem /tmp
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem imageinfo
+        #see what were the running processes using the pslist plugin
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 pslist
+        #display the processes and their parent processes
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 pstree
+        #list processes that are trying to hide themselves while running on the computer
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 psxview
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 connscan
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 sockets
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem --profile=Win7SP1x64 netscan
+
