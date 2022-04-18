@@ -60,8 +60,16 @@ jobs:
         du -h OtterCTF.vmem && mv OtterCTF.vmem /tmp
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem imageinfo
         docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem \
-        --profile=Win7SP1x86 hivelist        
+        --profile=Win7SP1x86 hivelist     
+        #dump the NTLM hashes from the SYSTEM and SAM registry hives
+        #crack with John the Ripper or Hashcat
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem \
+        --profile="Win7SP1x64" hashdump    
+        #extracting the plaintext password from the LSA secrets
+        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem \
+        --profile="Win7SP1x64" lsadump                    
         #dump the password hashes
         #docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem \
         --profile=Win7SP1x86 hashdump -y 0x8b21c008 -s 0x9aad6148 > hashes.txt       
         # cat hashes.txt
+    
