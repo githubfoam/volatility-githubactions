@@ -75,7 +75,11 @@ jobs:
         docker image ls
          #dump the NTLM hashes from the SYSTEM and SAM registry hives
         docker run -v /tmp:/tmp ${name}:${version} -f /tmp/OtterCTF.vmem \
-        --profile=Win7SP1x64 netscan | "grep svchost.exe"
+        --profile=Win7SP1x64 netscan
+        echo " PC IP...: 192.168.202.131" 
+        #The hostname is stored in the SYSTEM registry hive
+        docker run -v /tmp:/tmp ${name}:${version} -f /tmp/OtterCTF.vmem \
+        --profile=Win7SP1x64 hivelist        
         # docker run -v /tmp:/tmp ${name}:${version} -f /tmp/OtterCTF.vmem \
         # --profile=Win7SP1x64 hivelist | awk '/REGISTRY\\MACHINE\\SYSTEM/ {print $1} > hashes.txt
         # cat hashes.txt    
