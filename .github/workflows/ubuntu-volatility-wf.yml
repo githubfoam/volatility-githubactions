@@ -80,9 +80,12 @@ jobs:
         #The hostname is stored in the SYSTEM registry hive
         docker run -v /tmp:/tmp ${name}:${version} -f /tmp/OtterCTF.vmem \
         --profile=Win7SP1x64 hivelist        
-        # docker run -v /tmp:/tmp ${name}:${version} -f /tmp/OtterCTF.vmem \
-        # --profile=Win7SP1x64 hivelist | awk '/REGISTRY\\MACHINE\\SYSTEM/ {print $1} > hashes.txt
-        # cat hashes.txt    
+        varkey=$(docker run -v /tmp:/tmp ${name}:${version} -f /tmp/OtterCTF.vmem \
+        --profile=Win7SP1x64 hivelist | awk '/REGISTRY\\MACHINE\\SYSTEM/ {print $1})
+        echo "SYSTEM registry..: $varkey"
+        docker run -v /tmp:/tmp ${name}:${version} -f /tmp/OtterCTF.vmem \
+        --profile=Win7SP1x64 printkey -o $varkey \
+        -K "ControlSet001\Control\ComputerName\ComputerName"
         #dump the password hashes
         # docker run -v /tmp:/tmp ${name}:${version} -f /tmp/OtterCTF.vmem \
         # --profile=Win7SP1x86 hashdump -y 0x8b21c008 -s 0x9aad6148 > hashes.txt       
