@@ -59,21 +59,28 @@ jobs:
         p7zip -d OtterCTF.7z
         du -h OtterCTF.vmem
         mv OtterCTF.vmem /tmp
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem imageinfo
-         #dump the NTLM hashes from the SYSTEM and SAM registry hives
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem \
-        --profile=Win7SP1x64 hivelist
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem \
-        --profile=Win7SP1x64 hivelist | awk '/REGISTRY\\MACHINE\\SYSTEM/ {print $1} > hashes.txt
-        cat hashes.txt     
+        #The imageinfo plugin will scan the image and suggest a number of likely profiles
+        docker run -v /tmp:/tmp ${name}:${version} -f /tmp/OtterCTF.vmem imageinfo
         #crack with John the Ripper or Hashcat
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem \
-        --profile="Win7SP1x64" hashdump    
-        #extracting the plaintext password from the LSA secrets
-        docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem \
-        --profile="Win7SP1x64" lsadump                    
+        #dump the NTLM hashes from the SYSTEM and SAM registry hives
+        docker run -v /tmp:/tmp ${name}:${version} -f /tmp/OtterCTF.vmem \
+        --profile="Win7SP1x64" hashdump
+        #extracting the plaintext password from the LSA secrets, using the lsadump plugin.
+        docker run -v /tmp:/tmp ${name}:${version} -f /tmp/OtterCTF.vmem \
+        --profile="Win7SP1x64" lsadump   
+        echo "password is...: MortyIsReallyAnOtter"                 
+    - name: "analyze with volatility - whats the PC's name and IP address?"
+      run: |
+        set -xe
+        docker image ls
+         #dump the NTLM hashes from the SYSTEM and SAM registry hives
+        docker run -v /tmp:/tmp ${name}:${version} -f /tmp/OtterCTF.vmem \
+        --profile=Win7SP1x64 netscan | "grep svchost.exe"
+        # docker run -v /tmp:/tmp ${name}:${version} -f /tmp/OtterCTF.vmem \
+        # --profile=Win7SP1x64 hivelist | awk '/REGISTRY\\MACHINE\\SYSTEM/ {print $1} > hashes.txt
+        # cat hashes.txt    
         #dump the password hashes
-        # docker run -v /tmp:/tmp ubuntu/volatility:latest -f /tmp/OtterCTF.vmem \
+        # docker run -v /tmp:/tmp ${name}:${version} -f /tmp/OtterCTF.vmem \
         # --profile=Win7SP1x86 hashdump -y 0x8b21c008 -s 0x9aad6148 > hashes.txt       
         # cat hashes.txt
     
