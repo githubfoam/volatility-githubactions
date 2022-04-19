@@ -61,7 +61,9 @@ jobs:
         mv OtterCTF.vmem /tmp
         docker run -v /tmp:/tmp ${name}:${version} -f /tmp/OtterCTF.vmem imageinfo
         docker run -v /tmp:/tmp ${name}:${version} \
-        --plugins=/tmp/volatility-plugins/ --info | grep mimi
+        --plugins=/tmp/volatility-plugins/ --info
+        # docker run -v /tmp:/tmp ${name}:${version} \
+        # --plugins=/tmp/volatility-plugins/ --info | grep mimi
         docker run -v /tmp:/tmp ${name}:${version} --plugin=/tmp/volatility-plugins -f /tmp/OtterCTF.vmem  --profile="Win7SP1x64" mimikatz
 
   
