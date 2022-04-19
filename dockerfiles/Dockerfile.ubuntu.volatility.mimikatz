@@ -26,10 +26,7 @@ RUN set -xe && \
         cd /tmp/volatility-plugins && \
         apt-get update && \
         apt-get install python-pip -y && \
-        pip install construct && \
-        wget https://raw.githubusercontent.com/RealityNet/hotoloti/master/volatility/mimikatz.py  
-
-VOLUME /dumps
+        pip install construct
 
 USER vol
 

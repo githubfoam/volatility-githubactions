@@ -60,10 +60,15 @@ jobs:
         du -h OtterCTF.vmem
         mv OtterCTF.vmem /tmp
         docker run -v /tmp:/tmp ${name}:${version} -f /tmp/OtterCTF.vmem imageinfo
+        #create plugin dir
+        mkdir -p /tmp/volatility-plugins 
+        cd /tmp/volatility-plugins 
+        wget https://raw.githubusercontent.com/RealityNet/hotoloti/master/volatility/mimikatz.py 
         docker run -v /tmp:/tmp ${name}:${version} \
         --plugins=/tmp/volatility-plugins/ --info
-        # docker run -v /tmp:/tmp ${name}:${version} \
-        # --plugins=/tmp/volatility-plugins/ --info | grep mimi
-        docker run -v /tmp:/tmp ${name}:${version} --plugin=/tmp/volatility-plugins -f /tmp/OtterCTF.vmem  --profile="Win7SP1x64" mimikatz
+        docker run -v /tmp:/tmp ${name}:${version} \
+         --plugins=/tmp/volatility-plugins/ --info | grep mimikatz
+        docker run -v /tmp:/tmp ${name}:${version} --plugin=/tmp/volatility-plugins \
+        -f /tmp/OtterCTF.vmem  --profile="Win7SP1x64" mimikatz
 
   
